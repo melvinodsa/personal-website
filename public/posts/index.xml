@@ -13,10 +13,10 @@
     
     <item>
       <title>Setting up mysql-server docker container on mac os</title>
-      <link>/posts/my-first-post/</link>
+      <link>/posts/setting-up-mysql-server-docker-container-on-mac-os/</link>
       <pubDate>Thu, 18 Oct 2018 15:17:22 +0530</pubDate>
       
-      <guid>/posts/my-first-post/</guid>
+      <guid>/posts/setting-up-mysql-server-docker-container-on-mac-os/</guid>
       <description>Finally I did it
  I was starting the backend sever development of a much anticipated project. So created the basic auth. Now I need to store the user info. Let&amp;rsquo;s use #mysql.
 brew install mysql Wait.. I just shouldn&amp;rsquo;t install mysql in macOS. Why? Well the good old problem. I write the code and ships it. Suddenly something goes off. But it works in my system. Ooh I use macOS, but prod system is linux.</description>
