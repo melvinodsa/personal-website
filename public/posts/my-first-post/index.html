@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Setting up mysql-server docker container on mac os :: It&#39;s me Melvin</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Finally I did it
+ I was starting the backend sever development of a much anticipated project. So created the basic auth. Now I need to store the user info. Let&amp;rsquo;s use #mysql.
+brew install mysql Wait.. I just shouldn&amp;rsquo;t install mysql in macOS. Why? Well the good old problem. I write the code and ships it. Suddenly something goes off. But it works in my system. Ooh I use macOS, but prod system is linux."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="/posts/my-first-post/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Setting up mysql-server docker container on mac os :: It&#39;s me Melvin — " />
+<meta name="twitter:description" content="Finally I did it
+ I was starting the backend sever development of a much anticipated project. So created the basic auth. Now I need to store the user info. Let&amp;rsquo;s use #mysql.
+brew install mysql Wait.. I just shouldn&amp;rsquo;t install mysql in macOS. Why? Well the good old problem. I write the code and ships it. Suddenly something goes off. But it works in my system. Ooh I use macOS, but prod system is linux." />
+<meta name="twitter:site" content="/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Setting up mysql-server docker container on mac os :: It&#39;s me Melvin — ">
+<meta property="og:description" content="Finally I did it
+ I was starting the backend sever development of a much anticipated project. So created the basic auth. Now I need to store the user info. Let&amp;rsquo;s use #mysql.
+brew install mysql Wait.. I just shouldn&amp;rsquo;t install mysql in macOS. Why? Well the good old problem. I write the code and ships it. Suddenly something goes off. But it works in my system. Ooh I use macOS, but prod system is linux." />
+<meta property="og:url" content="/posts/my-first-post/" />
+<meta property="og:site_name" content="Setting up mysql-server docker container on mac os" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2018-10-18 15:17:22 &#43;0530 IST" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Melvin Davis
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/my-first-post/">Setting up mysql-server docker container on mac os</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2018-10-18
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <blockquote>
+<p><img src="/1/1.webp" alt="alt text" title="Sucessfully setup docker">
+Finally I did it</p>
+</blockquote>
+<p>I was starting the backend sever development of a much anticipated project. So created the basic auth. Now I need to store the user info. Let&rsquo;s use <strong><em>#mysql</em></strong>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">brew install mysql
+</code></pre></div><p>Wait.. I just shouldn&rsquo;t install mysql in macOS. Why? Well the good old problem. I write the code and ships it. Suddenly something goes off. <strong>But it works in my system</strong>. Ooh I use macOS, but prod system is linux. <strong>So <em><em>#Docker</em></em> is the way to go.</strong> Well I was very much enthusiastic about it. Directly navigated to the docker website, logged in and downloaded the docker for mac. Installed it. Well everything goes right. Now I pulled the mysql server docker image and ran it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker run -d --name app-mysql -e MYSQL_ROOT_PASSWORD<span style="color:#f92672">=</span>root -p 3306:3306 mysql/mysql-server
+docker ps
+</code></pre></div><p>Bhoom! docker app-mysql is up and healthy.. Now let me login to mysql</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">mysql -uroot -p
+</code></pre></div><blockquote>
+<p><img src="/1/2.webp" alt="alt text" title="First error">
+Oops let&rsquo;s Googe it</p>
+</blockquote>
+<p>Well&hellip; something is off. What is it? mysql running in docker is not accessible in through localhost. I was new to macOS. I am linux since college. Then what is my ip address that can be used. ifconfig in linux works well. Here I am trapped. Did some googling. So first I need to get the interface through which I can connect(I was hoping docker connects through docker0, Well thanks to macOS, there is no interface like that). <strong>networksetup</strong> is the goto man for us. I ran the command</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">networksetup -listallhardwareports
+</code></pre></div><blockquote>
+<p><img src="/1/3.webp" alt="alt text" title="Netowrk">
+listing all the networks</p>
+</blockquote>
+<p>So my interface name is en1, since I was connected to my wifi. Now I run the command to get the ip address</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ipconfig getifaddr en1
+<span style="color:#75715e">#192.168.43.180</span>
+</code></pre></div><p>Ok cool, now I got it sorted out.
+Again ran the command</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">mysql -uroot -h192.168.43.180 -p
+</code></pre></div><p>Now I get the error
+<code>ERROR 1130 (HY000): Host '172.17.0.1' is not allowed to connect to this MySQL server</code></p>
+<p>So I have to enable my macOS host machine to connect to mysql running in the docker container from the ip 172.17.0.1. For starters we have a network interface where mysql is allotted an ip 172.17.0.2 and host machine 172.17.0.1. Hmm&hellip; I will create a root user from 172.17.0.1. I think that would sort it out. I logged into the docker container mysql</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker exec -it app-mysql mysql -uroot -p
+</code></pre></div><p>Inside mysql shell I gave the commands to do the same</p>
+<pre><code>CREATE USER 'root'@'172.17.0.1' IDENTIFIED BY 'root';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'172.17.0.1';
+FLUSH PRIVILEGES;
+</code></pre><p>I verified it</p>
+<blockquote>
+<p><img src="/1/4.webp" alt="alt text" title="mysql user setup verified">
+mysql user from 127.17.0.1</p>
+</blockquote>
+<p>And finally ran the command</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">mysql -uroot -h192.168.43.180 -p
+</code></pre></div><p>and got the image shown at the top of this post.</p>
+
+      </div></div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
