@@ -6,10 +6,23 @@
     <description>Recent content on It&#39;s me Melvin</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 18 Oct 2018 15:17:22 +0530</lastBuildDate>
+    <lastBuildDate>Thu, 08 Nov 2018 15:17:22 +0530</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Setting up Go development environment</title>
+      <link>/posts/setting-up-go-development-environment/</link>
+      <pubDate>Thu, 08 Nov 2018 15:17:22 +0530</pubDate>
+      
+      <guid>/posts/setting-up-go-development-environment/</guid>
+      <description>My current Development IDE - Vim
+  Clear is better than clever
+ The following topics will be covered in this post
+ Overview of #Go Installing Go Setting up workspace Setting up an IDE  Prerequisite Well, there isn&amp;rsquo;t much. If can follow this post, it would be sufficient.
+Overview of Go Go is a general purpose programming language. It is used by engineers from different domains to create a lot of awesome stuffs.</description>
+    </item>
     
     <item>
       <title>Setting up mysql-server docker container on mac os</title>

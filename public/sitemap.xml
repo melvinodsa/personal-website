@@ -4,12 +4,17 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2018-10-18T15:17:22+05:30</lastmod>
+    <lastmod>2018-11-08T15:17:22+05:30</lastmod>
   </url>
   
   <url>
     <loc>/posts/</loc>
-    <lastmod>2018-10-18T15:17:22+05:30</lastmod>
+    <lastmod>2018-11-08T15:17:22+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/setting-up-go-development-environment/</loc>
+    <lastmod>2018-11-08T15:17:22+05:30</lastmod>
   </url>
   
   <url>

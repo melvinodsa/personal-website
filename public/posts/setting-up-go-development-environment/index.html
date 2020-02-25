@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Setting up Go development environment :: It&#39;s me Melvin</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="My current Development IDE - Vim
+  Clear is better than clever
+ The following topics will be covered in this post
+ Overview of #Go Installing Go Setting up workspace Setting up an IDE  Prerequisite Well, there isn&amp;rsquo;t much. If can follow this post, it would be sufficient.
+Overview of Go Go is a general purpose programming language. It is used by engineers from different domains to create a lot of awesome stuffs."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="/posts/setting-up-go-development-environment/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Setting up Go development environment :: It&#39;s me Melvin — " />
+<meta name="twitter:description" content="My current Development IDE - Vim
+  Clear is better than clever
+ The following topics will be covered in this post
+ Overview of #Go Installing Go Setting up workspace Setting up an IDE  Prerequisite Well, there isn&amp;rsquo;t much. If can follow this post, it would be sufficient.
+Overview of Go Go is a general purpose programming language. It is used by engineers from different domains to create a lot of awesome stuffs." />
+<meta name="twitter:site" content="/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Setting up Go development environment :: It&#39;s me Melvin — ">
+<meta property="og:description" content="My current Development IDE - Vim
+  Clear is better than clever
+ The following topics will be covered in this post
+ Overview of #Go Installing Go Setting up workspace Setting up an IDE  Prerequisite Well, there isn&amp;rsquo;t much. If can follow this post, it would be sufficient.
+Overview of Go Go is a general purpose programming language. It is used by engineers from different domains to create a lot of awesome stuffs." />
+<meta property="og:url" content="/posts/setting-up-go-development-environment/" />
+<meta property="og:site_name" content="Setting up Go development environment" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2018-11-08 15:17:22 &#43;0530 IST" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Melvin Davis
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/setting-up-go-development-environment/">Setting up Go development environment</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2018-11-08
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <blockquote>
+<p><img src="/2/1.webp" alt="alt text" title="vim setup for go">
+My current Development IDE - Vim</p>
+</blockquote>
+<blockquote>
+<p>Clear is better than clever</p>
+</blockquote>
+<p>The following topics will be covered in this post</p>
+<ul>
+<li>Overview of <em>#Go</em></li>
+<li>Installing Go</li>
+<li>Setting up workspace</li>
+<li>Setting up an IDE</li>
+</ul>
+<h1 id="prerequisite">Prerequisite<a href="#prerequisite" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Well, there isn&rsquo;t much. If can follow this post, it would be sufficient.</p>
+<h1 id="overview-of-go">Overview of Go<a href="#overview-of-go" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Go is a general purpose programming language. It is used by engineers from different domains to create a lot of awesome stuffs. Be it a simple IoT application or a large scale B2C platform, <em>#golang</em> should fit in. It&rsquo;s designed by engineers working in Google and
+is open source. A lot of companies that have products that needs to be scaled are betting on Go like Uber, Google etc. One of the main advantage of go is that the language has got a small grammar, hence you can jump into it within a couple of hours. It&rsquo;s designed to run in cloud and you would simply love it once start using it. There are exceptions where you simply don&rsquo;t want to build in Go. Reasons could be your organisational constraints, functional programming background etc. But the point is, there is nothing to lose trying out the language. It opens up a wide range of possibilities by easing up difficult concepts like multi-threaded programming, memory management, OOPs etc. There are still areas where go as a community should come together to have healthy discussions like error handling, modularisation, generics etc. Go enforces code readability, dev practices etc. which turns out to be win-win situation for a developer at the end of the day. Last but not least, tools. The amount tools available in the ecosystem awards a better coding experience through out the development life cycle.</p>
+<h1 id="installing-go">Installing Go<a href="#installing-go" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Installing Go is pretty straight forward. There is a general trend between linux users to do an apt-get install of any software. I don&rsquo;t generally prefer this method, because maintaining multiple versions or upgrading the language become a pain afterwards. I would suggest using the installation method mentioned in the official <a href="https://golang.org/doc/install">website</a></p>
+<h2 id="linuxmacos">Linux/macOS<a href="#linuxmacos" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Users can download the archive directly from their <a href="https://golang.org/dl/">website</a>. Once the archive is downloaded, one can extract tit directly into /usr/local by the following command</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
+</code></pre></div><p>where go$VERSION.$OS-$ARCH.tar.gz is the name of the archive file you&rsquo;ve just downloaded. For example go1.11.1.linux-amd64.tar.gz would be the name of the archive where downloaded version is 1.11.1 and the operating system is linux 64 bit.</p>
+<h2 id="windows">Windows<a href="#windows" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Windows users has got two options for installing Go.</p>
+<ol>
+<li>
+<p>From zip file - This method is similar to the one we had in linux/macOS. Download the <a href="https://golang.org/dl/">archive</a> and unzip it and place them in the folder c:\Go</p>
+</li>
+<li>
+<p>Using MSI installer - This is pretty much straight forward. Just download the <a href="https://golang.org/dl/">MSI installer</a> and double click the installer. It will take care of the rest.</p>
+</li>
+</ol>
+<p>Once installed you can check the installation by typing the following command in command line/terminal</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">go version
+<span style="color:#75715e"># go version go1.11.1 darwin/amd64</span>
+</code></pre></div><p>We are good to go here. In the next section we will see how to setup the workspace.</p>
+<h1 id="setting-up-workspace">Setting up workspace<a href="#setting-up-workspace" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<h2 id="prerequsite">Prerequsite<a href="#prerequsite" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><a href="https://git-scm.com/">git</a> / <a href="https://www.mercurial-scm.org/">mercurial</a></p>
+<p>Why we need a workspace. It&rsquo;s just plain simple. To organise the code and the projects, I would prefer a single place. Cause searching for the project files in the folder mess that I have created is the last thing I want to. Also it is easy to get the fetch the projects directly from github or from your private repositories using go get. Usually go workspace is created in a folder called go in your home directory if you&rsquo;ve used any installers(mac/windows). If it is not created, you can create one. Usually I create a workspace directory in my home folder. I keep both my go projects and other coding projects in this workspace itself. Workspace should have two directories called <strong>src</strong> and <strong>bin</strong>.</p>
+<blockquote>
+<p><img src="/2/2.webp" alt="alt text" title="default go workspace structure">
+Workspace directory structure</p>
+</blockquote>
+<p>Usually go keeps all the binaries that have been created using go install in bin and your source code in src. If you&rsquo;re from the Java background, you&rsquo;d know the pain of using libraries without knowing the source code or why the library function is not behaving the way you&rsquo;d expect it to do. Well with go you can say farewell to all those problems. With go you can go to source code of any library and even to logs in it and happy debugging. If you do a go get</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"> go get golang.org/x/tools/cmd/godoc
+</code></pre></div><p>a directory structure will be created in the src directory like this :- golang.org/x/tools/cmd/godoc where you can find the source code of godoc project.
+pkg directory will have the compiled source code in it.</p>
+<blockquote>
+<p>One thing about <code>go get</code> is that I use it instead of <em>#git</em>; don&rsquo;t just clone, use go get instead.</p>
+</blockquote>
+<p>One last thine. include the workspace and bin directory location in your environment variable.</p>
+<p>For macOS/linux user add the following line into your .bash_profile -&gt;</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export GOPATH<span style="color:#f92672">=</span>$HOME/workspace
+export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$PATH<span style="color:#e6db74">:</span>$GOPATH<span style="color:#e6db74">/bin&#34;</span>
+</code></pre></div><p>If you installed the go using a package installer probably your workspace directory name would be <strong><em>go</em></strong> instead of <strong><em>workspace</em></strong>.</p>
+<p>For windows users go to Start Menu search for environment variables. Select the one for adding environment variables in your account. Create an environment named GOPATH with the full path location of your workspace. Edit the path variable, if not existing create one - called path with value as the path to the bin directory in the go workspace. If the variable is existing add the path like this <strong><em>other_paths;C:\Users\melvin\go\bin</em></strong></p>
+<p>If you need to access private repositories and have the ssh keys added to the repository manager like github/bitbucket (follow <a href="https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/">this link</a>) add a following gitconfig file to your home directory with the following contents</p>
+<pre><code class="language-git" data-lang="git">[url &quot;git@bitbucket.org:&quot;]
+    insteadOf = https://bitbucket.org/
+[user]
+    name = your_git_username
+    email = youemailid@abcd.org
+</code></pre><h1 id="setting-up-an-ide">Setting up an IDE<a href="#setting-up-an-ide" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>If you&rsquo;re new to programming I would recommend you to use VS Code. You can easily install it by downloading it from the vs code <a href="https://code.visualstudio.com/">website</a>. Install the Go plugin for VS Code. Your IDE will take care of the rest by suggesting and asking for your permission to install the required go tools. But if you&rsquo;re a pro dev, you know the way <em>#vim</em>. Use my <a href="https://gist.github.com/melvinodsa/d526191883601fbdecbf3be9baf14a77">vimrc</a>. My IDE looks like the one that is at the top of this post.</p>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="/posts/setting-up-mysql-server-docker-container-on-mac-os/">
+          <span class="button__text">Setting up mysql-server docker container on mac os</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
