@@ -3,13 +3,18 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/posts/building-a-high-performant-concurrent-cache-in-golang/</loc>
+    <lastmod>2019-04-09T15:17:22+05:30</lastmod>
+  </url>
+  
+  <url>
     <loc>/</loc>
-    <lastmod>2018-11-23T15:17:22+05:30</lastmod>
+    <lastmod>2019-04-09T15:17:22+05:30</lastmod>
   </url>
   
   <url>
     <loc>/posts/</loc>
-    <lastmod>2018-11-23T15:17:22+05:30</lastmod>
+    <lastmod>2019-04-09T15:17:22+05:30</lastmod>
   </url>
   
   <url>

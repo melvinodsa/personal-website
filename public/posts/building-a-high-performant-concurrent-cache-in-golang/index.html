@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Building a high performant concurrent cache in Golang :: It&#39;s me Melvin</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="I have met many folks who are confused with the use-case for Go concurrency and channels. In this blog post, I explain how to create a simple cache using the concept of concurrency and channels. Building a memory safe cache is a pain. Often developers directly go for techs like Redis and other in-memory caches for the same. These in-memory caches are all excellent and well testing no doubt in that."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="/posts/building-a-high-performant-concurrent-cache-in-golang/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Building a high performant concurrent cache in Golang :: It&#39;s me Melvin — " />
+<meta name="twitter:description" content="I have met many folks who are confused with the use-case for Go concurrency and channels. In this blog post, I explain how to create a simple cache using the concept of concurrency and channels. Building a memory safe cache is a pain. Often developers directly go for techs like Redis and other in-memory caches for the same. These in-memory caches are all excellent and well testing no doubt in that." />
+<meta name="twitter:site" content="/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Building a high performant concurrent cache in Golang :: It&#39;s me Melvin — ">
+<meta property="og:description" content="I have met many folks who are confused with the use-case for Go concurrency and channels. In this blog post, I explain how to create a simple cache using the concept of concurrency and channels. Building a memory safe cache is a pain. Often developers directly go for techs like Redis and other in-memory caches for the same. These in-memory caches are all excellent and well testing no doubt in that." />
+<meta property="og:url" content="/posts/building-a-high-performant-concurrent-cache-in-golang/" />
+<meta property="og:site_name" content="Building a high performant concurrent cache in Golang" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2019-04-09 15:17:22 &#43;0530 IST" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Melvin Davis
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/building-a-high-performant-concurrent-cache-in-golang/">Building a high performant concurrent cache in Golang</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2019-04-09
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <p>I have met many folks who are confused with the use-case for Go concurrency and channels. In this blog post, I explain how to create a simple cache using the concept of concurrency and channels. Building a memory safe cache is a pain. Often developers directly go for techs like Redis and other in-memory caches for the same. These in-memory caches are all excellent and well testing no doubt in that. However, sometimes it turns out that you didn&rsquo;t require such a complex system. At the end of this post, I compare the performance of the cache we built-in with Redis.</p>
+<h1 id="lets-begin">Let&rsquo;s begin<a href="#lets-begin" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>The closest feature to in-memory cache in Go is the map. So when we need to build a high performant cache that shouldn&rsquo;t choke under traffic. When we talk about heavy traffic, the only area where people become skeptical safety in using it in a concurrent environment, as per Go <a href="https://golang.org/doc/go1.8#runtime,">https://golang.org/doc/go1.8#runtime,</a> they could get abused if used in a concurrent environment. If you read and write into a map in different goroutines, under heavy traffic, your program might end up crashing.</p>
+<h1 id="go-routines-and-channels">Go Routines and Channels<a href="#go-routines-and-channels" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>What&rsquo;s the most straightforward hack? Do read and write in a single goroutine itself. Let your cache be a goroutine that lives in the entire life cycle of the application. One can interact with the cache using Go Channels with the help of Request. The request is a struct that holds the key, payload, type of operation and an output channel to get back the response.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//Type holds the request type of operation like read and write
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Type</span> <span style="color:#66d9ef">uint</span>
+
+<span style="color:#66d9ef">const</span> (
+	<span style="color:#75715e">//READ from the cache
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//if the key doesn&#39;t exist in the cache it will return nil
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">READ</span> <span style="color:#a6e22e">Type</span> = <span style="color:#66d9ef">iota</span>
+	<span style="color:#75715e">//WRITE into the cache
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">WRITE</span>
+	<span style="color:#75715e">//DELETE keys from the cache
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">DELETE</span>
+)
+
+<span style="color:#75715e">//Request facilitates the read and write to the cache go routine
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Request</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#75715e">//Type is the type of the request
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Type</span> <span style="color:#a6e22e">Type</span>
+	<span style="color:#75715e">//Payload to be written inot the cache the operation is write
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Payload</span> <span style="color:#66d9ef">interface</span>{}
+	<span style="color:#75715e">//Key is the key with the payload to be accessed or written into
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Key</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#75715e">//Out chan is for getting the response in case of read operation
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Out</span> <span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Request</span>
+}
+</code></pre></div><p>All the interaction to the cache happens through a channel of Request type to the cache.
+At the startup, the cache goroutine comes into life. Then go into an infinite for loop waiting for requests to show up based on the type of operation, the Request intent to perform, cache complete the Request. The below image has the code implementation for the same.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//RequestChannel through which the requests can be made
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">RequestChannel</span> = make(<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Request</span>)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">init</span>() {
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">Cache</span>(<span style="color:#a6e22e">RequestChannel</span>)
+}
+
+<span style="color:#75715e">//Cache is the in-memory cache go routine
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Cache</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">cache</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">LoadPersistant</span>()
+	<span style="color:#66d9ef">for</span> {
+		<span style="color:#a6e22e">req</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>
+		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Type</span> {
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">READ</span>:
+			<span style="color:#75715e">//Read operation
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Payload</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">cache</span>[<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Key</span>]
+			<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">SendToChannel</span>(<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Out</span>, <span style="color:#a6e22e">req</span>)
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">WRITE</span>:
+			<span style="color:#75715e">//Write operation
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">cache</span>[<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Key</span>] = <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Payload</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">DELETE</span>:
+	;		<span style="color:#75715e">//Delete operation
+</span><span style="color:#75715e"></span>			delete(<span style="color:#a6e22e">cache</span>, <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Key</span>)
+		}
+	}
+}
+
+<span style="color:#75715e">//SendToChannel will send a rquest to the channel. It is intended for use along with routines
+</span><span style="color:#75715e">//If you want regulate the spawning of the go routines, you can use a go routine pool design
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">SendToChannel</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">req</span> <span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">req</span>
+}
+</code></pre></div><p>When the go routine spins up, we load the cache from the persistent storage and then perform update/put/read operations in the cache as per request. Goroutines used for sending the request payloads. One catch is that if too many goroutines spin up, it might be an issue. You could improve by creating a routine pool and serving from the pool to regulate the spawning of goroutines.</p>
+<p>Things left for the developer’s creativity:-</p>
+<ul>
+<li>Permissions</li>
+<li>Sharding</li>
+<li>Master/Slave</li>
+</ul>
+<p>You can check out the <a href="https://github.com/melvinodsa/go-experiments/tree/master/cache">code</a></p>
+<h1 id="questions">Questions<a href="#questions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p><em>Q:</em> Is using switch a right approach? Shouldn&rsquo;t we be using different channels for write and read operations and select for multiplexing?</p>
+<p><em>A:</em> Depends upon how you want to design the read and write. If the read and write come from different entities, you can go ahead, but again benchmark it. My benchmark results say the approach with switch and a single channel is faster than select. Check out my tweet on the <a href="https://twitter.com/melvinodsa/status/1031434710184939522">same</a></p>
+<blockquote>
+</blockquote>
+<p><em>Q:</em> Is it worth writing this piece of code than just going ahead and use Redis?</p>
+<p><em>A:</em> Again depends, if you need to keep a simple cache and no other fancy stuff like message broker, master/slave. It&rsquo;s is ridiculously faster. Check out the benchmark results.</p>
+<blockquote>
+<p><img src="/4/1.webp" alt="alt text" title="go cache comparison with Redis">
+Comparison with redis cache</p>
+</blockquote>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="/posts/the-magic-of-js-proxies/">
+          <span class="button__text">The magic of JS Proxies</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
