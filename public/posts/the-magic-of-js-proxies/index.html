@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>The magic of JS Proxies :: It&#39;s me Melvin</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Want to get rid of undefined error
+ You know the pain of this error. Being a JS developer, I often rely on an awful yet effective method to escape this loop.
+var y = x &amp;amp;&amp;amp; x.bar ? x.bar.foo : undefined; Yeah I know, when we start evaluating more complex objects it will become pretty nasty; yet I will argue it would never fail. Recently I came across Proxies in JS and found a pretty interesting concept introduced by Erik Vullum during a talk at JSConf Budapest."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="/posts/the-magic-of-js-proxies/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="The magic of JS Proxies :: It&#39;s me Melvin — " />
+<meta name="twitter:description" content="Want to get rid of undefined error
+ You know the pain of this error. Being a JS developer, I often rely on an awful yet effective method to escape this loop.
+var y = x &amp;amp;&amp;amp; x.bar ? x.bar.foo : undefined; Yeah I know, when we start evaluating more complex objects it will become pretty nasty; yet I will argue it would never fail. Recently I came across Proxies in JS and found a pretty interesting concept introduced by Erik Vullum during a talk at JSConf Budapest." />
+<meta name="twitter:site" content="/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="The magic of JS Proxies :: It&#39;s me Melvin — ">
+<meta property="og:description" content="Want to get rid of undefined error
+ You know the pain of this error. Being a JS developer, I often rely on an awful yet effective method to escape this loop.
+var y = x &amp;amp;&amp;amp; x.bar ? x.bar.foo : undefined; Yeah I know, when we start evaluating more complex objects it will become pretty nasty; yet I will argue it would never fail. Recently I came across Proxies in JS and found a pretty interesting concept introduced by Erik Vullum during a talk at JSConf Budapest." />
+<meta property="og:url" content="/posts/the-magic-of-js-proxies/" />
+<meta property="og:site_name" content="The magic of JS Proxies" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2018-11-23 15:17:22 &#43;0530 IST" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Melvin Davis
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/the-magic-of-js-proxies/">The magic of JS Proxies</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2018-11-23
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <blockquote>
+<p><img src="/3/1.webp" alt="alt text" title="undefined error appearing while using traversing deep nested objects">
+Want to get rid of undefined error</p>
+</blockquote>
+<p>You know the pain of this error. Being a JS developer, I often rely on an awful yet effective method to escape this loop.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">x</span>.<span style="color:#a6e22e">bar</span> <span style="color:#f92672">?</span> <span style="color:#a6e22e">x</span>.<span style="color:#a6e22e">bar</span>.<span style="color:#a6e22e">foo</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">undefined</span>;
+</code></pre></div><p>Yeah I know, when we start evaluating more complex objects it will become pretty nasty; yet I will argue it would never fail. Recently I came across Proxies in JS and found a pretty interesting concept introduced by Erik Vullum during a talk at JSConf Budapest. Proxies are pretty cool that I would recommend it a practice in their daily JS.</p>
+<h1 id="what-are-proxies">What are proxies?<a href="#what-are-proxies" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>As per MDN, the Proxy object is used to define custom behavior for fundamental operations on objects. For example, property lookup, assignment, enumeration, function invocation, and several other features can be changed with them. Suppose the number 37 should be returned as the default value when the property name is not in the object. Let&rsquo;s see how.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">handler</span> <span style="color:#f92672">=</span> {
+  <span style="color:#a6e22e">get</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">prop</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">prop</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">obj</span> <span style="color:#f92672">?</span> <span style="color:#a6e22e">obj</span>[<span style="color:#a6e22e">prop</span>] <span style="color:#f92672">:</span> <span style="color:#ae81ff">37</span>;
+  }
+};
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">p</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Proxy({}, <span style="color:#a6e22e">handler</span>);
+<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">a</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">b</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">undefined</span>;
+
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">b</span>); <span style="color:#75715e">// 1, undefined
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;c&#34;</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">c</span>); <span style="color:#75715e">// false, 37
+</span></code></pre></div><h1 id="insurance-for-undefined">Insurance for undefined<a href="#insurance-for-undefined" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>First of all, let&rsquo;s make the undefined a well-defined proxy function. We will define an empty JS Proxy function. We will add this proxy to objects which required to be safe.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">Undefined</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Proxy(<span style="color:#66d9ef">function</span>() {}, {
+  <span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">target</span>, <span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">receiver</span>) {
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">key</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#34;name&#34;</span>) {
+      <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Undefined&#34;</span>;
+    }
+
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Undefined</span>;
+  },
+  <span style="color:#a6e22e">apply</span>() {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Undefined</span>;
+  }
+});
+</code></pre></div><p>Now we make a function called insurance that will return a proxy for the given object. When an undefined property is accessed, the insurance function will return the function defined above. In all other cases, it works as expected.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">insurance</span>(<span style="color:#a6e22e">obj</span>) {
+  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Proxy(<span style="color:#a6e22e">obj</span>, {
+    <span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">target</span>, <span style="color:#a6e22e">key</span>) {
+      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">accessedProperty</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">Reflect</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">target</span>, <span style="color:#a6e22e">key</span>);
+
+      <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">accessedProperty</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#34;object&#34;</span>) {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">insurance</span>(<span style="color:#a6e22e">accessedProperty</span>);
+      } <span style="color:#66d9ef">else</span> {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">accessedProperty</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">undefined</span> <span style="color:#f92672">?</span> <span style="color:#a6e22e">Undefined</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">accessedProperty</span>;
+      }
+    }
+  });
+}
+</code></pre></div><p>So buckle up, we are going to create an object with insurance function that will never fail.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">iNeverFail</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">insurance</span>({
+  <span style="color:#a6e22e">foo</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bar&#34;</span>,
+  <span style="color:#a6e22e">baz</span><span style="color:#f92672">:</span> {
+    <span style="color:#a6e22e">qux</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">10</span>,
+    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;yoyo&#34;</span>
+  }
+});
+
+<span style="color:#a6e22e">iNeverFail</span>.<span style="color:#a6e22e">asd</span>; <span style="color:#75715e">//ƒ anonymous()
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">iNeverFail</span>.<span style="color:#a6e22e">asd</span>.<span style="color:#a6e22e">name</span>; <span style="color:#75715e">// &#34;Undefined&#34;
+</span></code></pre></div><p>At this point, I would love to share the source of inspiration for this post.</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/_5X2aB_mNp4" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="/posts/setting-up-go-development-environment/">
+          <span class="button__text">Setting up Go development environment</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

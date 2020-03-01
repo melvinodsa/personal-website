@@ -13,10 +13,10 @@
     
     <item>
       <title>The magic of JS Proxies</title>
-      <link>/posts/setting-up-go-development-environment-copy/</link>
+      <link>/posts/the-magic-of-js-proxies/</link>
       <pubDate>Fri, 23 Nov 2018 15:17:22 +0530</pubDate>
       
-      <guid>/posts/setting-up-go-development-environment-copy/</guid>
+      <guid>/posts/the-magic-of-js-proxies/</guid>
       <description>Want to get rid of undefined error
  You know the pain of this error. Being a JS developer, I often rely on an awful yet effective method to escape this loop.
 var y = x &amp;amp;&amp;amp; x.bar ? x.bar.foo : undefined; Yeah I know, when we start evaluating more complex objects it will become pretty nasty; yet I will argue it would never fail. Recently I came across Proxies in JS and found a pretty interesting concept introduced by Erik Vullum during a talk at JSConf Budapest.</description>
